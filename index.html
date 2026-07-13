@@ -86,7 +86,8 @@ h2 { font-size: 22px; margin-bottom: 20px; border-bottom: 2px solid var(--accent
     </style>
 </head>
 <body>
-    <button class="theme-toggle" onclick="toggleTheme()">🌗 切换主题</button>
+    <!-- 使用 div 代替 button，彻底避免手机端浏览器对 button 的默认拦截 -->
+<div class="theme-toggle" id="themeToggleBtn">🌗 切换主题</div>
 
     <div class="container">
         <!-- 左侧固定信息栏 -->
@@ -212,7 +213,34 @@ h2 { font-size: 22px; margin-bottom: 20px; border-bottom: 2px solid var(--accent
 
 
     <script>
-    // 1. 复制微信号功能
+    // 页面加载完成后执行
+    window.onload = function() {
+        // 1. 获取按钮元素并绑定点击事件
+        const toggleBtn = document.getElementById('themeToggleBtn');
+        toggleBtn.addEventListener('click', toggleTheme);
+
+        // 2. 页面加载时，自动恢复上次保存的主题
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'dark') {
+            document.documentElement.setAttribute('data-theme', 'dark');
+        }
+    }
+
+    // 3. 主题切换核心逻辑
+    function toggleTheme() {
+        const html = document.documentElement;
+        const currentTheme = html.getAttribute('data-theme');
+        
+        if (currentTheme === 'dark') {
+            html.removeAttribute('data-theme');
+            localStorage.setItem('theme', 'light');
+        } else {
+            html.setAttribute('data-theme', 'dark');
+            localStorage.setItem('theme', 'dark');
+        }
+    }
+
+    // 4. 复制微信号功能（保留之前的代码）
     function copyWeChat(wechatId) {
         const input = document.createElement('input');
         input.setAttribute('value', wechatId);
@@ -220,32 +248,17 @@ h2 { font-size: 22px; margin-bottom: 20px; border-bottom: 2px solid var(--accent
         input.select();
         document.execCommand('copy');
         document.body.removeChild(input);
-        
-        // 调用提示框
         showToast('微信号已复制：' + wechatId + '，快去添加吧！');
     }
 
-    // 2. 通用提示框功能
+    // 5. 通用提示框功能（保留之前的代码）
     function showToast(message) {
         const toast = document.getElementById('toast');
         toast.innerText = message;
-        toast.style.opacity = '1'; // 显示提示框
-        
-        // 2秒后自动隐藏
+        toast.style.opacity = '1';
         setTimeout(() => {
             toast.style.opacity = '0';
         }, 2000);
-    }
-
-    // 3. 主题切换功能（保留之前的代码）
-    function toggleTheme() {
-        const html = document.documentElement;
-        const currentTheme = html.getAttribute('data-theme');
-        if (currentTheme === 'dark') {
-            html.removeAttribute('data-theme');
-        } else {
-            html.setAttribute('data-theme', 'dark');
-        }
     }
 </script>
 </body>
